@@ -3,7 +3,7 @@ const { deleteImgCloudinary } = require("../../middleware/files.middleware");
 
 //! ---------------------------- modelos ----------------------------------
 const User = require("../models/User.model");
-const Product = require('../models/Product.models')
+const Product = require('../models/Product.model')
 
 //! ---------------------------- utils ----------------------------------
 const randomCode = require("../../utils/randomCode");
@@ -120,60 +120,6 @@ const registerLargo = async (req, res, next) => {
   } catch (error) {
     // SIEMPRE QUE HAY UN ERROR GENERAL TENEMOS QUE BORRAR LA IMAGEN QUE HA SUBIDO EL MIDDLEWARE
     if (req.file) deleteImgCloudinary(catchImg);
-    return next(error);
-  }
-};
-
-//! -----------------------------------------------------------------------------
-//? ------------------CONTRALADORES QUE PUEDEN SER REDIRECT --------------------
-//! ----------------------------------------------------------------------------
-
-//!!! esto quiere decir que o bien tienen entidad propia porque se llaman por si mismos por parte del cliente
-//! o bien son llamados por redirect es decir son controladores de funciones accesorias
-
-const sendCode = async (req, res, next) => {
-  try {
-    /// sacamos el param que hemos recibido por la ruta
-    /// recuerda la ruta: http://localhost:${PORT}/api/v1/users/register/sendMail/${userSave._id}
-    const { id } = req.params;
-
-    /// VAMOS A BUSCAR EL USER POR ID para tener el email y el codigo de confirmacion
-    const userDB = await User.findById(id);
-
-    /// ------------------> envio el codigo
-    const emailEnv = process.env.EMAIL;
-    const password = process.env.PASSWORD;
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: emailEnv,
-        pass: password,
-      },
-    });
-
-    const mailOptions = {
-      from: emailEnv,
-      to: userDB.email,
-      subject: "Confirmation code",
-      text: `tu codigo es ${userDB.confirmationCode}, gracias por confiar en nosotros ${userDB.name}`,
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-        return res.status(404).json({
-          user: userDB,
-          confirmationCode: "error, resend code",
-        });
-      }
-      console.log("Email sent: " + info.response);
-      return res.status(200).json({
-        user: userDB,
-        confirmationCode: userDB.confirmationCode,
-      });
-    });
-  } catch (error) {
     return next(error);
   }
 };
@@ -633,9 +579,10 @@ const deleteUser = async (req, res, next) => {
     const { _id, image } = req.user;
     await User.findByIdAndDelete(_id);
     if (await User.findById(_id)) {
-      // si el usuario
-      return res.status(404).json("not deleted"); ///
+      // si el usuario sigue apareciendo en la db es que no se ha eliminado
+      return res.status(404).json("not deleted");
     } else {
+      // si no encuentra el usuario en le db entonces borra la imagen y 200 delete
       deleteImgCloudinary(image);
       return res.status(200).json("ok delete");
     }
@@ -644,103 +591,9 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-//! -----------------------------------------------------------------------------
-//? ---------------------------------FOLLOW USER--------------------------------------
-//! -----------------------------------------------------------------------------
 
-const followUserToggle = async (req, res, next) => {
-  try {
-    const { idUserSeQuiereSeguir } = req.params;
-    const { followed } = req.user; // busco en el arrray de seguidores si le sigo o no este usuario
-
-    if (followed.includes(idUserSeQuiereSeguir)) {
-      //! si lo incluye, quiere decir lo sigo por lo que lo dejo de seguir
-      try {
-        // 1) como lo quiero dejar de seguir quito su id del array de los que me siguen
-
-        await User.findByIdAndUpdate(req.user._id, {
-          $pull: {
-            followed: idUserSeQuiereSeguir,
-          },
-        });
-        try {
-          // 2) del user que dejo de seguir me tengo que quitar de sus seguidores
-
-          await User.findByIdAndUpdate(idUserSeQuiereSeguir, {
-            $pull: {
-              followers: req.user._id,
-            },
-          });
-
-          return res.status(200).json({
-            action: "he dejado de seguirlo",
-            authUser: await User.findById(req.user._id),
-            userSeQuiereSeguir: await User.findById(idUserSeQuiereSeguir),
-          });
-        } catch (error) {
-          return res.status(404).json({
-            error:
-              "error catch update quien le sigue al user que recibo por el param",
-            message: error.message,
-          });
-        }
-      } catch (error) {
-        return res.status(404).json({
-          error:
-            "error catch update borrar de seguidor el id que recibo por el param",
-          message: error.message,
-        });
-      }
-    } else {
-      //! si no lo tengo como que lo sigo, lo empiezo a seguir
-
-      try {
-        // 1) como lo quiero dejar de seguir quito su id del array de los que me siguen
-
-        await User.findByIdAndUpdate(req.user._id, {
-          $push: {
-            followed: idUserSeQuiereSeguir,
-          },
-        });
-        try {
-          // 2) del user que dejo de seguir me tengo que quitar de sus seguidores
-
-          await User.findByIdAndUpdate(idUserSeQuiereSeguir, {
-            $push: {
-              followers: req.user._id,
-            },
-          });
-
-          return res.status(200).json({
-            action: "Lo empiezo a seguir de seguirlo",
-            authUser: await User.findById(req.user._id),
-            userSeQuiereSeguir: await User.findById(idUserSeQuiereSeguir),
-          });
-        } catch (error) {
-          return res.status(404).json({
-            error:
-              "error catch update quien le sigue al user que recibo por el param",
-            message: error.message,
-          });
-        }
-      } catch (error) {
-        return res.status(404).json({
-          error:
-            "error catch update poner de seguidor el id que recibo por el param",
-          message: error.message,
-        });
-      }
-    }
-  } catch (error) {
-    return res.status(404).json({
-      error: "error catch general",
-      message: error.message,
-    });
-  }
-};
 module.exports = {
   registerLargo,
-  sendCode,
   resendCode,
   checkNewUser,
   login,
@@ -750,5 +603,4 @@ module.exports = {
   modifyPassword,
   update,
   deleteUser,
-  followUserToggle,
 };

@@ -1,4 +1,6 @@
+const { isAuth } = require("../../middleware/auth.middleware");
 const { upload } = require("../../middleware/files.middleware");
+
 const {
     createProduct,
     getAllProducts,
@@ -10,7 +12,7 @@ const {
 
 const ProductRoutes = require("express").Router();
 
-ProductRoutes.post("/", upload.single("image"), createProduct);
+ProductRoutes.post("/", isAuth, upload.single("image"), createProduct);
 ProductRoutes.get("/:id", getProductById);
 ProductRoutes.get("/", getAllProducts);
 ProductRoutes.get("/byName/:name", getProductByName);

@@ -1,3 +1,4 @@
+const { deleteImgCloudinary } = require("../../middleware/files.middleware");
 const enumOk = require("../../utils/enumOk");
 const Product = require("../models/Product.model");
 const User = require("../models/User.model");
@@ -10,28 +11,33 @@ const createProduct = async (req, res, next) => {
   let catchImg = req.file?.path;
   try {
     //! -----> ACTUALIZAR INDEXES
-
     await Product.syncIndexes();
+
+    //! ------> OBTENER EL ID DEL USUARIO AUTENTICADO
+    const userId = req.user._id;
+
     //! ------> INSTANCIAR UN NUEVO PRODUCTO
-    const newProduct = new Product(req.body);
+    const newProduct = new Product({
+      ...req.body,
+      user: userId,
+    });
 
     //! -------> VALORAR SI HEMOS RECIBIDO UNA IMAGEN O NO
     if (req.file) {
       newProduct.image = catchImg;
     } else {
-      newProduct.image =
-        "https://res.cloudinary.com/dhkbe6djz/image/upload/v1689099748/UserFTProyect/tntqqfidpsmcmqdhuevb.png";
+      newProduct.image = "https://res.cloudinary.com/dhkbe6djz/image/upload/v1689099748/UserFTProyect/tntqqfidpsmcmqdhuevb.png";
     }
 
     try {
       //! ------------> VAMOS A GUARDAR LA INSTANCIA DEL NUEVO PRODUCT
-      const saveProduct = await newProduct.save();
-      if (saveProduct) {
-        return res.status(200).json(saveProduct);
+      const savedProduct = await newProduct.save();
+      if (savedProduct) {
+        // Agregar el producto creado al usuario
+        await User.findByIdAndUpdate(userId, { $push: { products: savedProduct._id } });
+        return res.status(200).json(savedProduct);
       } else {
-        return res
-          .status(404)
-          .json("No se ha podido guardar el elemento en la DB ❌");
+        return res.status(404).json("No se ha podido guardar el elemento en la DB ❌");
       }
     } catch (error) {
       return res.status(404).json("error general saved Product");
@@ -48,6 +54,7 @@ const createProduct = async (req, res, next) => {
     );
   }
 };
+
 
 //! ---------------------------------------------------------------------
 //? -------------------------------get by id --------------------------
