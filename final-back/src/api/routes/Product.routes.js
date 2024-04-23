@@ -7,7 +7,8 @@ const {
     getProductById,
     getProductByName,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getAllProductsOfUser
 } = require("../controllers/Product.controllers");
 
 const ProductRoutes = require("express").Router();
@@ -15,8 +16,9 @@ const ProductRoutes = require("express").Router();
 ProductRoutes.post("/", isAuth, upload.single("image"), createProduct);
 ProductRoutes.get("/:id", getProductById);
 ProductRoutes.get("/", getAllProducts);
+ProductRoutes.get("/:userId/products", isAuth, getAllProductsOfUser);
 ProductRoutes.get("/byName/:name", getProductByName);
 ProductRoutes.patch("/:id", upload.single("image"), updateProduct);
-ProductRoutes.delete("/:id", deleteProduct);
+ProductRoutes.delete("/:id", isAuth, deleteProduct);
 
 module.exports = ProductRoutes;

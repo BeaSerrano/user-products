@@ -20,6 +20,7 @@ const createProduct = async (req, res, next) => {
     const newProduct = new Product({
       ...req.body,
       user: userId,
+      tags: req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : [],
     });
 
     //! -------> VALORAR SI HEMOS RECIBIDO UNA IMAGEN O NO
@@ -72,6 +73,37 @@ const getProductById = async (req, res, next) => {
     return res.status(404).json(error.message);
   }
 };
+
+//! ---------------------------------------------------------------------
+//? ------------- get all products of user ------------------------------
+//! ---------------------------------------------------------------------
+
+
+const getAllProductsOfUser = async (req, res, next) => {
+  try {
+    // Obtener el ID del usuario de la solicitud
+    const userId = req.params.userId; // O cualquier otra forma en que recibas el ID del usuario
+
+    // Buscar los productos del usuario específico utilizando el ID del usuario
+    const userProducts = await Product.find({ user: userId }).populate("user");
+
+    // Verificar si se encontraron productos para el usuario
+    if (userProducts.length > 0) {
+      // Devolver los productos encontrados en formato JSON
+      return res.status(200).json(userProducts);
+    } else {
+      // Devolver un mensaje indicando que no se encontraron productos para el usuario
+      return res.status(404).json("No se encontraron productos para el usuario");
+    }
+  } catch (error) {
+    // Capturar y manejar cualquier error que ocurra durante la consulta a la base de datos
+    return res.status(500).json({
+      error: "Error al buscar productos del usuario",
+      message: error.message,
+    });
+  }
+};
+
 //! ---------------------------------------------------------------------
 //? -------------------------------get all ------------------------------
 //! ---------------------------------------------------------------------
@@ -126,85 +158,61 @@ const updateProduct = async (req, res, next) => {
     if (productById) {
       const oldImg = productById.image;
 
+      // Convertir la cadena de tags en un array separado por comas
+      const updatedTags = req.body.tags ? req.body.tags.split(',').map(tag => tag.trim()) : productById.tags;
+
       const customBody = {
         _id: productById._id,
         image: req.file?.path ? catchImg : oldImg,
         name: req.body?.name ? req.body?.name : productById.name,
+        description: req.body?.description ? req.body?.description : productById.description,
+        category: req.body?.category ? req.body?.category : productById.category,
+        tags: updatedTags,
+        // Agrega otras propiedades que desees actualizar
       };
 
-      //* CAMBIAR A CATEGORIAS */
-      if (req.body?.gender) {
-        const resultEnum = enumOk(req.body?.gender);
-        customBody.gender = resultEnum.check
-          ? req.body?.gender
-          : characterById.gender;
+      // Realiza la actualización del producto
+      const updatedProduct = await Product.findByIdAndUpdate(id, customBody, { new: true });
+
+      // Verifica si el producto se actualizó correctamente
+      if (!updatedProduct) {
+        return res.status(404).json("No se pudo actualizar el producto");
       }
 
-      try {
-        await Product.findByIdAndUpdate(id, customBody);
-        if (req.file?.path) {
-          deleteImgCloudinary(oldImg);
-        }
+      // Realiza el test de la actualización
+      const updatedKeys = Object.keys(req.body);
+      const test = {};
 
-        //** ------------------------------------------------------------------- */
-        //** VAMOS A TESTEAR EN TIEMPO REAL QUE ESTO SE HAYA HECHO CORRECTAMENTE */
-        //** ------------------------------------------------------------------- */
+      updatedKeys.forEach((item) => {
+        test[item] = req.body[item] === updatedProduct[item];
+      });
 
-        // ......> VAMOS A BUSCAR EL ELEMENTO ACTUALIZADO POR ID
+      if (catchImg) {
+        updatedProduct.image === catchImg
+          ? (test['image'] = true)
+          : (test['image'] = false);
+      }
 
-        const productByIdUpdate = await Product.findById(id);
-
-        // ......> me cojer el req.body y vamos a sacarle las claves para saber que elementos nos ha dicho de actualizar
-        const elementUpdate = Object.keys(req.body);
-
-        /** vamos a hacer un objeto vacion donde meteremos los test */
-
-        let test = {};
-
-        /** vamos a recorrer las claves del body y vamos a crear un objeto con los test */
-
-        elementUpdate.forEach((item) => {
-          if (req.body[item] === productByIdUpdate[item]) {
-            test[item] = true;
-          } else {
-            test[item] = false;
-          }
-        });
-
-        if (catchImg) {
-          productByIdUpdate.image === catchImg
-            ? (test = { ...test, file: true })
-            : (test = { ...test, file: false });
-        }
-
-        /** vamos a ver que no haya ningun false. Si hay un false lanzamos un 404,
-         * si no hay ningun false entonces lanzamos un 200 porque todo esta correcte
-         */
-
-        let acc = 0;
-        for (clave in test) {
-          test[clave] == false && acc++;
-        }
-
-        if (acc > 0) {
-          return res.status(404).json({
-            dataTest: test,
-            update: false,
-          });
-        } else {
-          return res.status(200).json({
-            dataTest: test,
-            update: true,
-          });
-        }
-      } catch (error) {}
+      // Devuelve la respuesta con el objeto test y el estado de la actualización
+      return res.status(200).json({
+        dataTest: test,
+        update: true,
+        updatedProduct: updatedProduct // Opcional: Devuelve el producto actualizado en la respuesta
+      });
     } else {
-      return res.status(404).json("este producto no existe");
+      return res.status(404).json("Este producto no existe");
     }
   } catch (error) {
-    return res.status(404).json(error);
+    return res.status(500).json({
+      error: "Error al actualizar el producto",
+      message: error.message,
+    });
   }
 };
+
+
+
+
 
 //! ---------------------------------------------------------------------
 //? -------------------------------DELETE -------------------------------
@@ -213,44 +221,46 @@ const updateProduct = async (req, res, next) => {
 const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findByIdAndDelete(id);
-    if (product) {
-      // lo buscamos para vr si sigue existiendo o no
-      const finByIdProduct = await Product.findById(id);
+    
+    // Buscar el producto por ID
+    const product = await Product.findById(id);
 
+    if (!product) {
+      return res.status(404).json("Este producto no existe");
+    }
+
+    // Verificar si el usuario autenticado es el propietario del producto
+    if (product.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json("No tienes permiso para eliminar este producto");
+    }
+
+    // Eliminar el producto
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    
+    if (deletedProduct) {
+      // Eliminar el producto de la lista de productos del usuario
       try {
-        const test = await User.updateMany(
-          { products: id },
-          { $pull: { products: id } }
-        );
-        console.log(test);
-        //** ESTO SE BORRA PORQUE CREO QUE SON LOS FAVORITOS */
-        /* try {
-          await User.updateMany(
-            { charactersFav: id },
-            { $pull: { charactersFav: id } }
-          );
-
-          return res.status(finByIdCharacter ? 404 : 200).json({
-            deleteTest: finByIdCharacter ? false : true,
-          });
-        } catch (error) {
-          return res.status(404).json({
-            error: "error catch update User",
-            message: error.message,
-          });
-        } */
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, { $pull: { products: id } }, { new: true });
+        console.log(updatedUser);
       } catch (error) {
-        return res.status(404).json({
-          error: "error catch update User",
+        return res.status(500).json({
+          error: "Error al actualizar el usuario",
           message: error.message,
         });
       }
+
+      return res.status(200).json("Producto eliminado exitosamente");
+    } else {
+      return res.status(404).json("No se pudo eliminar el producto");
     }
   } catch (error) {
-    return res.status(404).json(error.message);
+    return res.status(500).json({
+      error: "Error al eliminar el producto",
+      message: error.message,
+    });
   }
 };
+
 
 module.exports = {
   createProduct,
@@ -259,4 +269,5 @@ module.exports = {
   getProductByName,
   updateProduct,
   deleteProduct,
+  getAllProductsOfUser,
 };
