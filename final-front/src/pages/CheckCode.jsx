@@ -137,7 +137,7 @@ export const CheckCode = () => {
               className="btn"
               type="submit"
               disabled={send}
-              style={{ background: send ? "#fe46c5" : "#49c1a2" }}
+              style={{ background: send ? "#fe46c5" : "#ffd819" }}
             >
               Verify Code
             </button>

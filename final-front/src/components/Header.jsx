@@ -21,15 +21,16 @@ export const Header = () => {
             </NavLink>
           )}
 
-          {user !== null ? (
-            <NavLink to="/dashboard">
-              <button className="butonNav buttonDashboard">Dashboard</button>
-            </NavLink>
-          ) : null}
-
           <NavLink to="/">
             <button className="butonNav buttonHome">Home</button>
           </NavLink>
+
+          {user !== null ? (
+            <NavLink to="/dashboard">
+              <button className="butonNav buttonDashboard">Mis productos</button>
+            </NavLink>
+          ) : null}
+
           {user !== null && (
             <img
               src="https://res.cloudinary.com/dq186ej4c/image/upload/v1685706203/9e3c325bca17c2147d249237c5a0906b_qhqifa.png"
