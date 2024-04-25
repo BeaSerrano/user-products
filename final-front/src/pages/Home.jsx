@@ -58,10 +58,18 @@ export const Home = () => {
         {products.map((product) => (
           <div key={product._id} className="product-card">
             <img src={product.image} alt={product.name} className="card-img-top" />
+            <div className="card-info">
               <h4 className="card-title">{product.name}</h4>
-              <div>
-                <span className="card-text">Price: {product.price}</span>
-              </div>
+                <span>{product.price} €</span>
+            </div>
+            <div className="card-description">
+              <p>{product.description}</p>
+            </div>
+            <div className="card-tags">
+              {product.tags.map((tag, index) => (
+                <span key={index} className="tag">{tag}</span>
+              ))}
+            </div>
           </div>
         ))}
       </div>

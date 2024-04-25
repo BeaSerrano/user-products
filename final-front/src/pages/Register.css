@@ -78,10 +78,12 @@ a {
 .form-wrap .btn:hover {
   background: #fe46c5;
   color: #f4f4f4;
+  border: #fe46c5 1px solid;
 }
 
 .form-wrap .btn:focus {
   outline-color: #fe46c5;
+  border: #fe46c5 1px solid;
 }
 
 .form-wrap .bottom-text {
