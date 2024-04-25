@@ -13,12 +13,12 @@ const {
 
 const ProductRoutes = require("express").Router();
 
-ProductRoutes.post("/", isAuth, upload.single("image"), createProduct);
+ProductRoutes.post("/create", [isAuth], upload.single("image"), createProduct);
 ProductRoutes.get("/:id", getProductById);
 ProductRoutes.get("/", getAllProducts);
-ProductRoutes.get("/:userId/products", isAuth, getAllProductsOfUser);
+ProductRoutes.get("/:userId/products", [isAuth], getAllProductsOfUser);
 ProductRoutes.get("/byName/:name", getProductByName);
-ProductRoutes.patch("/:id", upload.single("image"), updateProduct);
-ProductRoutes.delete("/:id", isAuth, deleteProduct);
+ProductRoutes.patch("/update/:id", upload.single("image"), updateProduct);
+ProductRoutes.delete("/:id", [isAuth], deleteProduct);
 
 module.exports = ProductRoutes;

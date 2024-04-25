@@ -1,6 +1,4 @@
-import { all } from "axios";
 import { createContext, useContext, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 

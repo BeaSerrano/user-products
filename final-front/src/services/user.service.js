@@ -4,7 +4,7 @@ import { APIuser } from "./serviceApiUse.config";
 
 //! ------------------------------- REGISTER -----------------------------------
 export const registerUser = async (formData) => {
-  return APIuser.post("/users/register", formData, {
+  return APIuser.post("/users/registerLargo", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   })
     .then((res) => res)

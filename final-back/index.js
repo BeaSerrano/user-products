@@ -13,11 +13,9 @@ connect();
 
 //! ----------------- CONFIGURAR CLOUDINARY--------
 const { configCloudinary } = require("./src/middleware/files.middleware");
-
 configCloudinary();
 
 //! -----------------VARIABLES CONSTANTES --> PORT
-
 const PORT = process.env.PORT;
 
 //! -----------------------CORS-------------
@@ -50,7 +48,6 @@ app.use((error, req, res) => {
 });
 
 //! ------------------ ESCUCHAMOS EN EL PUERTO EL SERVIDOR WEB-----
-
 // esto de aqui  nos revela con que tecnologia esta hecho nuestro back
 app.disable("x-powered-by");
 app.listen(PORT, () =>

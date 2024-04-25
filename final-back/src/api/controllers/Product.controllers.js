@@ -1,5 +1,4 @@
 const { deleteImgCloudinary } = require("../../middleware/files.middleware");
-const enumOk = require("../../utils/enumOk");
 const Product = require("../models/Product.model");
 const User = require("../models/User.model");
 
@@ -41,7 +40,12 @@ const createProduct = async (req, res, next) => {
         return res.status(404).json("No se ha podido guardar el elemento en la DB ❌");
       }
     } catch (error) {
-      return res.status(404).json("error general saved Product");
+      return (
+        res.status(404).json({
+          messege: "error general saved Product",
+          error: error,
+        }) && next(error)
+      );
     }
   } catch (error) {
     //! -----> solo entramos aqui en el catch cuando ha habido un error
@@ -111,6 +115,7 @@ const getAllProductsOfUser = async (req, res, next) => {
 const getAllProducts = async (req, res, next) => {
   try {
     const allProduct = await Product.find().populate("user");
+    console.log(allProduct);
     if (allProduct.length > 0) {
       return res.status(200).json(allProduct);
     } else {
@@ -166,9 +171,9 @@ const updateProduct = async (req, res, next) => {
         image: req.file?.path ? catchImg : oldImg,
         name: req.body?.name ? req.body?.name : productById.name,
         description: req.body?.description ? req.body?.description : productById.description,
+        price: req.body?.price ? req.body?.price : productById.price,
         category: req.body?.category ? req.body?.category : productById.category,
         tags: updatedTags,
-        // Agrega otras propiedades que desees actualizar
       };
 
       // Realiza la actualización del producto
