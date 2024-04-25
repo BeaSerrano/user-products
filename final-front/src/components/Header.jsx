@@ -9,42 +9,26 @@ export const Header = () => {
       <header>
         <div className="titleFatherContainer">
           <img
-            src="https://res.cloudinary.com/dq186ej4c/image/upload/v1685704450/user-3296_rtszbc.png"
+            src="https://res.cloudinary.com/deahoouj6/image/upload/v1714061772/logoReBee_ebnpms.png"
             alt="logo"
             className="logo"
           />
-          <div className="titleContainer">
-            <h1 className="titleHeader">USER PAGE</h1>
-            <h1 className="titleHeaderBlack">USER PAGE</h1>
-          </div>
         </div>
         <nav>
           {user == null && (
             <NavLink to="/login">
-              <img
-                src="https://res.cloudinary.com/dq186ej4c/image/upload/v1685705523/login_ljn9fb.png"
-                alt=""
-                className="iconNav"
-              />
+              <button className="butonNav">Sign in</button>
             </NavLink>
           )}
 
           {user !== null ? (
             <NavLink to="/dashboard">
-              <img
-                src="https://res.cloudinary.com/dq186ej4c/image/upload/v1685705689/dashboard-statistics-5492_rnmxcl.png"
-                alt=""
-                className="iconNav iconDashBoard"
-              />
+              <button className="butonNav buttonDashboard">Dashboard</button>
             </NavLink>
           ) : null}
 
           <NavLink to="/">
-            <img
-              src="https://res.cloudinary.com/dq186ej4c/image/upload/v1685705455/home_circle_outline_icon_139029_xdnnt2.png"
-              alt=""
-              className="iconNav home"
-            />
+            <button className="butonNav buttonHome">Home</button>
           </NavLink>
           {user !== null && (
             <img
@@ -68,7 +52,7 @@ export const Header = () => {
           {}
         </nav>
       </header>
-      <div className="whiteContainer"></div>
+      <div className="spaceContainer"></div>
     </>
   );
 };

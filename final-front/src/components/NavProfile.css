@@ -3,7 +3,8 @@
   }
 
   .containerNavProfile {
-    background-color: #2f7a67;
+    background-color: #000000;
+    border: 2px solid #fe46c5;
     height: 12vh;
     display: flex;
     justify-content: center;

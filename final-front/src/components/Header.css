@@ -1,29 +1,14 @@
 header {
-  height: 20vh;
+  height: 10vh;
   width: 100vw;
-  background-color: #2f7a67;
+  background-color: #000000;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.titleHeaderBlack {
-  position: absolute;
-  color: white;
-  top: 2px;
-}
-
-.titleContainer {
-  color: #183f35;
-  width: 360px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
 }
 
 .titleFatherContainer {
-  color: #183f35;
+  color: #000000;
   width: 360px;
   display: flex;
   justify-content: center;
@@ -31,44 +16,55 @@ header {
 }
 
 .logo {
-  width: 100px;
+  width: 150px;
+}
+
+.butonNav {
+  min-width: 130px;
+  height: 40px;
+  color: white;
+  padding: 5px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  outline: none;
+  border: 2px solid #ffd819;
+  background: #000000;
+  border-radius:50px;
+}
+
+.butonNav:hover {
+  background: #ffd819;
+  color: #000000;
 }
 
 .iconNav {
-  width: 60px;
-}
-
-.iconNav.home {
-  width: 60px;
-  transform: scale(1.2);
+  width: 30px;
+  filter: invert(100%);
 }
 
 nav {
   display: flex;
   gap: 1rem;
-}
-
-.whiteContainer {
-  width: 100vw;
-  height: 1vh;
-  background-color: white;
+  margin-right: 20px;
 }
 
 .iconLogout {
-  transform: scale(0.8);
-  width: 70px;
-  height: 70px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  border: solid 7px black;
+  border: solid 4px black;
   border-radius: 50%;
 }
 
 .profileCircle {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
   border-radius: 50%;
-  border: solid black 6px;
+  border: solid #ffd819 4px;
 }
 
 a {
@@ -77,20 +73,36 @@ a {
   justify-content: center;
 }
 
-.iconDashBoard {
-  width: 60px;
-  height: 60px;
-  border-radius: 50px;
+.buttonDashboard, .buttonHome {
+  border: 2px solid #fe46c5;
+  background: #000000;
+}
+
+.buttonDashboard:hover, .buttonHome:hover {
+  background: #fe46c5;
+  color: white;
+}
+
+.spaceContainer{
+  height:1px;
+  width: 100vw;
+  background-color: #ffd819;
 }
 
 @media (max-width: 700px) {
-  header {
-    flex-direction: column;
-  }
   .logo {
-    width: 50px;
+    width: 100px;
   }
-  .titleFatherContainer {
-    width: 263px;
+
+  .butonNav {
+    min-width: 100px;
+    height: 30px;
+    padding: 4px 8px;
+    font-size:0.7rem;
+  }
+
+  .iconNav, .iconLogout, .profileCircle {
+    width: 35px;
+    height: 35px;
   }
 }

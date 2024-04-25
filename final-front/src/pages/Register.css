@@ -8,7 +8,7 @@
 
 body {
   font-family: "Raleway", sans-serif;
-  background: #000000;
+  background: white;
   color: #fff;
   line-height: 1.8;
 }
@@ -27,7 +27,7 @@ a {
 
 .form-wrap {
   margin: 2rem 0  2rem 0;
-  background: #f7fffa;
+  background: #ededed;
   padding: 15px 25px 30px;
   color: #333;
   border-radius: 5px;
@@ -43,7 +43,7 @@ a {
 }
 
 .form-wrap .form-group label {
-  color: #2f7a67;
+  color: #000000;
   font-weight: normal;
 }
 
@@ -54,34 +54,34 @@ a {
   border-radius: 5px;
   font-family: inherit;
   font-size: inherit;
-  caret-color: #2f7a67;
-  border: solid 2px #49c1a371;
+  caret-color: #ffd819;
+  border: solid 2px #ffd819;
 }
 
 .form-wrap .form-group input:focus {
-  outline-color: #49c1a2;
+  outline-color: #ffd819;
 }
 
 .form-wrap .btn {
   width: 100%;
   padding: 10px;
   margin-top: 25px;
-  background: #2f7a67;
+  background: #ffd819;
   color: #fff;
   cursor: pointer;
-  border: #2f7a67 1px solid;
+  border: #ffd819 1px solid;
   border-radius: 5px;
   font-family: inherit;
   font-size: inherit;
 }
 
 .form-wrap .btn:hover {
-  background: #37a08e;
+  background: #fe46c5;
   color: #f4f4f4;
 }
 
 .form-wrap .btn:focus {
-  outline-color: #37a08e;
+  outline-color: #fe46c5;
 }
 
 .form-wrap .bottom-text {
@@ -99,11 +99,11 @@ a {
 }
 
 footer a {
-  color: #49c1a2;
+  color: #000000;
 }
 
 footer a:hover {
-  color: #37a08e;
+  color: #fe46c5;
 }
 
 .btn:disabled {
@@ -132,22 +132,22 @@ input[type="radio"] {
 }
 
 .label-radio {
-  background: #37a08e57;
-  color: #fff;
+  background: #ffd819;
+  color: #000000;
   padding: 10px;
   text-align: center;
   width: 49.5%;
 }
 
 input[type="radio"]:checked + .label-radio {
-  background: #2f7a67;
-  color: #fff !important;
+  background: #d9bb11;
+  color: #000000 !important;
 }
 
 a {
-  color: #49c1a2;
+  color: #fe46c5;
 }
 
 .anchorCustom {
-  color: #276052;
+  color: #fe46c5;
 }

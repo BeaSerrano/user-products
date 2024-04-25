@@ -69,7 +69,7 @@ const registerLargo = async (req, res, next) => {
         newUser.image = "https://pic.onlinewebfonts.com/svg/img_181369.png";
       }
 
-      ///! SI HAY UNA NUEVA ASINCRONIA DE CREAR O ACTUALIZAR HAY QUE METER OTRO TRY CATCH
+      //! SI HAY UNA NUEVA ASINCRONIA DE CREAR O ACTUALIZAR HAY QUE METER OTRO TRY CATCH
       try {
         const userSave = await newUser.save();
 

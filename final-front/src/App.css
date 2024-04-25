@@ -1,8 +1,9 @@
 main {
   width: 100vw;
-  min-height: 70vh;
+  min-height: 82vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  color:black;
 }
