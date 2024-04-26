@@ -8,3 +8,5 @@ export * from "./Register";
 export * from "./Login";
 export * from "./FormProfile"
 export * from "./ChangePassword"
+export * from "./ProductId"
+export * from './ProductIdRoute'

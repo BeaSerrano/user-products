@@ -1,5 +1,5 @@
 import Swal from "sweetalert2/dist/sweetalert2.all.js";
-export const useUpdateError = (res, setRes, setUser, logout) => {
+export const useUpdateError = (res, setRes, setUser, logout, userlogin) => {
   //!---------------------------------------> 200
   let contador;
   if (res?.data) {
@@ -24,7 +24,18 @@ export const useUpdateError = (res, setRes, setUser, logout) => {
       }
     });
     if (res?.status == 200) {
-      logout();
+      const currentUser = localStorage.getItem("user");
+      const parseUser = JSON.parse(currentUser);
+      const customUser = {
+        ...parseUser,
+        name: res?.data?.updateUser?.name,
+        image: res?.data?.updateUser?.image,
+      };
+
+      const stringUser = JSON.stringify(customUser);
+      // llamamos a la funcion de login para resetear que el check esta a true
+      userlogin(stringUser);
+
       setRes(() => ({}));
       return Swal.fire({
         icon: "success",

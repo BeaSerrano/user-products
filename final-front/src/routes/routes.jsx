@@ -10,6 +10,7 @@ import {
   CheckCode,
   FormProfile,
   ChangePassword,
+  ProductIdRoute,
 } from "../pages";
 import { Protected } from "../components";
 import ProtectedCheckChildren from "../components/ProtectedRoute/ProtectedCheckChildren";
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             <Dashboard />
           </Protected>
         ),
+      },
+      {
+        path: "/product/:productId", // Ruta dinámica con el parámetro de ruta :productId
+        element: <ProductIdRoute />,
       },
       {
         path: "/forgotPassword",

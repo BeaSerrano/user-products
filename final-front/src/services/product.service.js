@@ -12,10 +12,19 @@ export const createProduct = async (formData) => {
 };
 
 //! ----------------------------- GET PRODUCT BY ID -----------------------
-export const productsById = async (formData) => {
+/* export const productsById = async (formData) => {
   return APIuser.get("/products/:id", formData)
     .then((res) => res)
     .catch((error) => error);
+}; */
+
+export const productsById = async (productId) => {
+  try {
+    const response = await APIuser.get(`/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 //! ----------------------------- GET ALL PRODUCTS -----------------------
@@ -27,14 +36,19 @@ export const productsAll = async (formData) => {
 
 //! ----------------------- GET ALL PRODUCTS OF USER -----------------------
 export const productsByUser = async (formData) => {
-  return APIuser.get("/products/:userId/products", formData, {
-    headers: {
-      Authorization: `Bearer ${updateToken()}`,
-    },
-  })
-    .then((res) => res)
-    .catch((error) => error);
+  try {
+    const userId = formData; // Asumiendo que formData ya contiene el userId
+    const response = await APIuser.get(`/products/${userId}/products`, {
+      headers: {
+        Authorization: `Bearer ${updateToken()}`,
+      },
+    });
+    return response.data; // Devolver solo los datos de la respuesta
+  } catch (error) {
+    throw error; // Lanzar el error para que se maneje en el componente
+  }
 };
+
 
 //! --------------------------- GET PRODUCT BY NAME -----------------------
 export const productsByName = async (formData) => {

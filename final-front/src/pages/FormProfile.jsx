@@ -12,6 +12,7 @@ export const FormProfile = () => {
   const { register, handleSubmit } = useForm();
   const [res, setRes] = useState({});
   const [send, setSend] = useState(false);
+  const { login } = useAuth();
 
   const defaultData = {
     name: user?.user,
@@ -55,7 +56,7 @@ export const FormProfile = () => {
 
   useEffect(() => {
     console.log(res);
-    useUpdateError(res, setRes, setUser, logout);
+    useUpdateError(res, setRes, setUser, logout, login);
   }, [res]);
 
   return (

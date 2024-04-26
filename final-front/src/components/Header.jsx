@@ -27,7 +27,13 @@ export const Header = () => {
 
           {user !== null ? (
             <NavLink to="/dashboard">
-              <button className="butonNav buttonDashboard">Mis productos</button>
+              <button className="butonNav buttonDashboard">My products</button>
+            </NavLink>
+          ) : null}
+
+          {user !== null ? (
+            <NavLink to="/dashboard">
+              <button className="butonNav buttonDashboard">Add product</button>
             </NavLink>
           ) : null}
 
