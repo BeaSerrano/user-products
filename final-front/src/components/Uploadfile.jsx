@@ -1,12 +1,20 @@
 import React, { useEffect } from "react";
 import "./Uploadfile.css";
 import { useForm } from "react-hook-form";
+
 export const Uploadfile = ({ registerForm }) => {
   const { register, handleSubmit } = useForm();
+
   const ekUpload = () => {
     const Init = () => {
       var fileSelect = document.getElementById("file-upload");
       fileSelect.addEventListener("change", fileSelectHandler, false);
+
+      var fileDrag = document.getElementById("file-drag");
+      fileDrag.addEventListener("dragover", fileDragHover, false);
+      fileDrag.addEventListener("dragenter", fileDragHover, false);
+      fileDrag.addEventListener("dragleave", fileDragHover, false);
+      fileDrag.addEventListener("drop", fileDropHandler, false);
     };
 
     const fileDragHover = (e) => {
@@ -16,30 +24,35 @@ export const Uploadfile = ({ registerForm }) => {
       e.preventDefault();
 
       fileDrag.className =
-        e.type === "dragover" ? "hover" : "modal-body file-upload";
+        e.type === "dragover" || e.type === "dragenter"
+          ? "hover"
+          : "modal-body file-upload";
     };
 
     const fileSelectHandler = (e) => {
-      // Fetch FileList object
       let files = e.target.files || e.dataTransfer.files;
 
-      // Cancel event and hover styling
       fileDragHover(e);
 
-      // Process all File objects
       for (let i = 0, f; (f = files[i]); i++) {
         parseFile(f);
       }
     };
 
-    // Output
-    const output = (msg) => {
-      // Response
-      let m = document.getElementById("messages");
-      m.innerHTML = msg;
+    const fileDropHandler = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      let files = e.dataTransfer.files;
+
+      fileDragHover(e);
+
+      for (let i = 0, f; (f = files[i]); i++) {
+        parseFile(f);
+      }
     };
 
-    function parseFile(file) {
+    const parseFile = (file) => {
       output("<strong>" + encodeURI(file.name) + "</strong>");
       let imageName = file.name;
 
@@ -48,7 +61,6 @@ export const Uploadfile = ({ registerForm }) => {
         document.getElementById("start").classList.add("hidden");
         document.getElementById("response").classList.remove("hidden");
         document.getElementById("notimage").classList.add("hidden");
-        // Thumbnail Preview
         document.getElementById("file-image").classList.remove("hidden");
         document.getElementById("file-image").src = URL.createObjectURL(file);
       } else {
@@ -58,7 +70,13 @@ export const Uploadfile = ({ registerForm }) => {
         document.getElementById("response").classList.add("hidden");
         document.getElementById("file-upload-form").reset();
       }
-    }
+    };
+
+    const output = (msg) => {
+      let m = document.getElementById("messages");
+      m.innerHTML = msg;
+    };
+
     if (window.File && window.FileList && window.FileReader) {
       Init();
     } else {
@@ -68,7 +86,7 @@ export const Uploadfile = ({ registerForm }) => {
 
   useEffect(() => {
     ekUpload();
-  });
+  }, []);
 
   return (
     <div id="file-upload-form" className="uploader">

@@ -11,6 +11,7 @@ import {
   FormProfile,
   ChangePassword,
   ProductIdRoute,
+  CreateProduct,
 } from "../pages";
 import { Protected } from "../components";
 import ProtectedCheckChildren from "../components/ProtectedRoute/ProtectedCheckChildren";
@@ -41,7 +42,15 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/product/:productId", // Ruta dinámica con el parámetro de ruta :productId
+        path: "/addproduct",
+        element: (
+          <Protected>
+            <CreateProduct />
+          </Protected>
+        ),
+      },
+      {
+        path: "/product/:productId", // ruta dinamica con el param :productId
         element: <ProductIdRoute />,
       },
       {

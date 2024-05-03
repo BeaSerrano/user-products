@@ -3,7 +3,6 @@ import "./App.css";
 import { Footer, Header } from "./components";
 
 export const App = () => {
-  window.onunload = () => localStorage.removeItem("user");
   return (
     <>
       <Header />

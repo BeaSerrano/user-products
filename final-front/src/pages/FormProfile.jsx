@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-
 import "./FormProfile.css";
 import { FigureUser, Uploadfile } from "../components";
 import { useAuth } from "../context/authContext";
@@ -7,6 +6,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2/dist/sweetalert2.all.js";
 import { updateUser } from "../services/user.service";
 import { useUpdateError } from "../hooks";
+
 export const FormProfile = () => {
   const { user, setUser, logout } = useAuth();
   const { register, handleSubmit } = useForm();

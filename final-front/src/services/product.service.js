@@ -12,11 +12,6 @@ export const createProduct = async (formData) => {
 };
 
 //! ----------------------------- GET PRODUCT BY ID -----------------------
-/* export const productsById = async (formData) => {
-  return APIuser.get("/products/:id", formData)
-    .then((res) => res)
-    .catch((error) => error);
-}; */
 
 export const productsById = async (productId) => {
   try {
@@ -58,8 +53,9 @@ export const productsByName = async (formData) => {
 };
 
 //! --------------------------- UPDATE PRODUCT -----------------------
-export const updateProduct = async (formData) => {
-  return APIuser.patch("/products/update/:id", formData, {
+
+export const updateProduct = async (productId, formData) => {
+  return APIuser.patch(`/products/update/${productId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${updateToken()}`,
@@ -70,8 +66,9 @@ export const updateProduct = async (formData) => {
 };
 
 //! --------------------------- DELETE PRODUCT -----------------------
-export const deleteProduct = async () => {
-  return APIuser.delete("/products/", {
+
+export const deleteProduct = async (productId) => {
+  return APIuser.delete(`/products/${productId}`, {
     headers: {
       Authorization: `Bearer ${updateToken()}`,
     },

@@ -21,7 +21,7 @@ export const Login = () => {
 
   //! ---------USEffect ASOCIADO A LA RES PARA GESTIONAR LOS ERRORES----------------
   useEffect(() => {
-    console.log(res);
+    console.log("res", res);
     useLoginError(res, setRes, login, setLoginOk);
   }, [res]);
 

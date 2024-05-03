@@ -10,3 +10,4 @@ export * from "./FormProfile"
 export * from "./ChangePassword"
 export * from "./ProductId"
 export * from './ProductIdRoute'
+export * from './AddProduct'

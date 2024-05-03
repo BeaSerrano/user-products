@@ -8,3 +8,6 @@ export * from "./useChangePasswordError"
 export * from "./useUpdateError"
 export * from "./useDeleteUser"
 export * from './useDashboardError'
+export * from './useDeleteProduct'
+export * from './useUpdateProductError'
+export * from './useCreateProductError'

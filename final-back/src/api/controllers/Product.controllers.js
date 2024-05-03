@@ -40,12 +40,12 @@ const createProduct = async (req, res, next) => {
         return res.status(404).json("No se ha podido guardar el elemento en la DB ❌");
       }
     } catch (error) {
-      return (
-        res.status(404).json({
-          messege: "error general saved Product",
-          error: error,
-        }) && next(error)
-      );
+      // Manejo del error y llamada a next
+      next(error);
+      return res.status(404).json({
+        messege: "error general saved Product",
+        error: error.message // o cualquier otra propiedad de error que desees incluir
+      });
     }
   } catch (error) {
     //! -----> solo entramos aqui en el catch cuando ha habido un error
